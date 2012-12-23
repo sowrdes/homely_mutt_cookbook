@@ -1,0 +1,42 @@
+[general]
+ui = TTY.TTYUI
+<% account = "#{@fname.capitalize}#{@lname.capitalize}" %>
+accounts = <%= "#{@fname.capitalize}#{@lname.capitalize}" %>
+pythonfile=~/.mutt/offlineimap.py
+fsync = False
+
+[Account <%= account %>]
+localrepository = <%= account %>-Local
+remoterepository = <%= account %>-Remote
+status_backend = sqlite
+postsynchook = notmuch new
+
+[Repository <%= account %>-Local]
+type = Maildir
+localfolders = ~/.mail/<%= @fname %>-<%= @fname %><%= @lname %>.com
+nametrans = lambda folder: { \
+<% @nametrans_local.each do |local, remote| %>
+  <%= "                           '#{local}':  '#{remote}',\n" %> <% end %>
+                           }.get(folder, folder)
+
+[Repository <%= account %>-Remote]
+maxconnections = 1
+type = Gmail
+<% email = @email %>
+remoteuser = <%= email %>
+remotepasseval = get_keychain_pass(account="<%= email %>", server="imap.gmail.com")
+realdelete = no
+sslcacertfile = ~/.mutt/Equifax_Secure_CA.cert
+nametrans = lambda folder: { \
+<% map = @nametrans_local; map.invert.each do |remote, local| %>
+  <%= "                            '#{remote}':  '#{local}',\n" %>
+<% end %>
+                           }.get(folder, folder)
+
+folderfilter = lambda folder: folder not in ['[Gmail]/Trash',
+                                             'Nagios',
+                                             'Django',
+                                             'Flask',
+                                             '[Gmail]/Important',
+                                             '[Gmail]/Spam',
+                                             ]

@@ -49,6 +49,8 @@ packages.each do |pack|
     end
   when 'mutt'
     node.set['mutt']['account'] = "#{fname}-#{account}.com"
+    node.set['mutt']['msmtp_account'] = account
+    node.set['mutt']['email'] = email
     include_recipe "mutt"
   when 'msmtp'
     cookbook_file "#{user_home}/.mutt/Equifax_Secure_CA.cert" do

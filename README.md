@@ -7,6 +7,12 @@ In other words, you give it a firstname, lastname, and email address, and it
 assumes you want accounts named and described and inter-related in mutt,
 offlineimap, and msmtp according to that blog post.
 
+You will need some kind of chef setup, whether using chef-solo with or without
+soloist, or using normal chef with a chef server.
+
+The URL for the box in the Vagrantfile is NOT correct... I built my base box
+with veewee, but it's really just the latest stable debian squeeze.
+
 # Requirements
 
 - mutt (my mutt\_cookbook repo, see the Berksfile)
